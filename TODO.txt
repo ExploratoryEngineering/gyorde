@@ -1,0 +1,6 @@
+1. Make dropwizard app
+2. Generate java client code for gyorde.
+3. Generate dockerized test fixture that runs the golang server at known port
+4. Run the client against that go server.
+5. Make the code nice.
+6. Victory.
