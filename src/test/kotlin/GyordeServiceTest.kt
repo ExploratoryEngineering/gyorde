@@ -14,4 +14,13 @@ class GyordeServiceTest {
         s.start()
         s.stop()
     }
+
+    @Test
+    fun roundtrip() {
+        val c = GyordeClient("localhost", 9998)
+        val s = GyordeServer(9998)
+        s.start()
+        c.checkDevice("a", "b")
+        s.stop()
+    }
 }
