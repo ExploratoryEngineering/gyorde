@@ -14,30 +14,30 @@ import java.util.concurrent.TimeUnit
 
 
 
+typealias Predicate = (String: String, String) -> Boolean
 
 
-class GyordeService (): DeviceCheckImplBase() {
+class GyordeService (val p: Predicate): DeviceCheckImplBase() {
 
     override fun checkDevice(
         request: CheckDeviceRequest,
         responseObserver: StreamObserver<CheckDeviceResponse>
     ) {
-        // super.checkDevice(request, responseObserver)
-        val result = CheckDeviceResponse.newBuilder().setSuccess(true).build()
+
+        val r = p(""+request.imsi, request.ipAddress.toString()) // TODO: Monkeypatching the imsi
+        val result = CheckDeviceResponse.newBuilder().setSuccess(r).build()
         responseObserver.onNext(result)
         responseObserver.onCompleted()
     }
 }
 
 
-class GyordeServer(val port: Int) {
+class GyordeServer(val port: Int, val p:  Predicate) {
     val server: Server
 
     init {
-        server = ServerBuilder.forPort(port).addService(GyordeService()).build()
+        server = ServerBuilder.forPort(port).addService(GyordeService(p)).build()
     }
-
-
 
     /** Stop serving requests and shutdown resources.  */
     fun stop() {
