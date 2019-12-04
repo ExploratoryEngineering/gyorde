@@ -1,4 +1,3 @@
-
 import com.google.protobuf.gradle.*
 import org.ostelco.gyorde.gradle.Version
 
@@ -27,6 +26,11 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:${Version.protoc}")
     implementation("com.google.protobuf:protobuf-java-util:${Version.protoc}")
     implementation("javax.annotation:javax.annotation-api:${Version.javaxAnnotation}")
+
+    testImplementation("org.assertj:assertj-core:3.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+
 }
 
 java {
@@ -63,4 +67,9 @@ idea {
 
 tasks.clean {
     delete(protobufGeneratedFilesBaseDir)
+}
+
+
+tasks.test {
+    useJUnitPlatform()
 }

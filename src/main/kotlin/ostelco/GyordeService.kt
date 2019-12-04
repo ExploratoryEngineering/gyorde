@@ -46,10 +46,3 @@ class GyordeServer(val port: Int) {
         })
     }
 }
-
-
-fun main(args: Array<String>) {
-    println("Hello World!")
-    val server = GyordeServer(8980)
-    server.start()
-}
