@@ -30,8 +30,9 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_12
-    targetCompatibility = JavaVersion.VERSION_12
+    // TODO: Update to version_11, and make it build (something is blocking build in IDE for version_12)
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 var protobufGeneratedFilesBaseDir: String = ""
