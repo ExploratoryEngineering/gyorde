@@ -46,6 +46,7 @@ sourceSets {
     }
 }
 
+def grpcVersion = '1.27.0-SNAPSHOT' // CURRENT_GRPC_VERSION
 
 
 protobuf {
@@ -54,26 +55,22 @@ protobuf {
     //    // Download from repositories
     //    artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
     // }
-   
-   
-   
-   
 
-    generateProtoTasks.generatedFilesBaseDir = 'generated-sources'
+    generateProtoTasks.generatedFilesBaseDir = 'src'
 
-    generateProtoTasks {
-       // all() returns the collection of all protoc tasks
-         all()*.plugins { grpc {} }
-
-       // all().each { task ->
-           // Here you can configure the task
-       // }
-   
-       // In addition to all(), you may get the task collection by various
-       // criteria:
-   
-       // (Java only) returns tasks for a sourceSet
-       ofSourceSet('main')
-   
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
     }
+    // all() returns the collection of all protoc tasks
+    // all()*.plugins { grpc {} }
+
+    // all().each { task ->
+    // Here you can configure the task
+    // }
+
+    // In addition to all(), you may get the task collection by various
+    // criteria:
+
+    // (Java only) returns tasks for a sourceSet
+    // ofSourceSet('main')
 }
