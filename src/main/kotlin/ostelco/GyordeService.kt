@@ -3,6 +3,7 @@ package ostelco
 import com.google.protobuf.ByteString
 import gyorde.DeviceCheckGrpc
 import gyorde.DeviceCheckGrpc.*
+import gyorde.Gyorde
 import gyorde.Gyorde.CheckDeviceRequest
 import gyorde.Gyorde.CheckDeviceResponse
 import io.grpc.ManagedChannel
@@ -14,7 +15,8 @@ import java.util.concurrent.TimeUnit
 
 
 
-typealias Predicate = (String: String, String) -> Boolean
+// imsi, iptype, ip address  -> boolean
+typealias Predicate = (Long, Gyorde.CheckDeviceRequest.IPType, ByteString) -> Boolean
 
 
 class GyordeService (val p: Predicate): DeviceCheckImplBase() {
@@ -23,8 +25,7 @@ class GyordeService (val p: Predicate): DeviceCheckImplBase() {
         request: CheckDeviceRequest,
         responseObserver: StreamObserver<CheckDeviceResponse>
     ) {
-
-        val r = p(""+request.imsi, request.ipAddress.toString()) // TODO: Monkeypatching the imsi
+        val r = p(request.imsi, request.ipType ,request.ipAddress)
         val result = CheckDeviceResponse.newBuilder().setSuccess(r).build()
         responseObserver.onNext(result)
         responseObserver.onCompleted()
