@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package gyorde;
+
+// Attribute is metadata on the device. These attributes aren't required for
+// anything but information purposes. The cell ID attribute is particularly
+// useful if you want to avoid spamming the base stations when there's lots
+// of devices in the same area that gets firmware updates or messages.
+message Attribute {
+    enum Type {
+        IMEISV = 0;           // The 3GPP-IMEISV attribute in RADIUS
+        CELLID = 1;           // This is normally inside the 3GPP-User-Location-Info attribute
+        USERLOCATIONINFO = 2; // The 3GPP-User-Location-Info attribute in RADIUS
+    };
+    Type type = 1;            // Type of attribute
+    bytes value = 3;          // Attribute value
+};
+
+// CheckDeviceRequest contains information on the device connecting to Horde.
+// Both IMSI and, address type and address are required fields.
+message CheckDeviceRequest {
+    enum IPType {
+        IPV4 = 0;
+        IPV6 = 1;
+    }
+
+    int64 imsi = 1;
+    IPType ipType = 2;
+    bytes ipAddress = 3;
+    repeated Attribute attributes = 4;
+};
+
+// CheckDeviceResponse is the response sent from Horde to the client when a
+// device is checked. If the device is accepted the success field is set to true.
+message CheckDeviceResponse {
+    bool success = 1;
+    string errorMessage = 2;
+};
+
+// DeviceChecker checks if a device is allowed to access the Horde service.
+service DeviceCheck {
+    // CheckDevice checks if a device is registered in Horde.
+    rpc CheckDevice(CheckDeviceRequest) returns (CheckDeviceResponse);
+};
