@@ -77,11 +77,15 @@ class GyordeClient(val host: String, val port: Int) {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
 
-    fun checkDevice(imsi: String, ipAddress: String): gyorde.Gyorde.CheckDeviceResponse {
-        // TODO:   IMSI should not be numerical, too dangerous, make it a string.
+    fun checkDevice(
+        imsi: Long,
+        ipType: CheckDeviceRequest.IPType,
+        ipAddress: ByteString): gyorde.Gyorde.CheckDeviceResponse {
+
         val request = CheckDeviceRequest.newBuilder()
-            .setImsi(123L)
-            .setIpAddress(ByteString.EMPTY).build()
+            .setImsi(imsi)
+            .setIpAddress(ipAddress)
+            .setIpType(ipType).build()
         return blockingStub.checkDevice(request)
     }
 }

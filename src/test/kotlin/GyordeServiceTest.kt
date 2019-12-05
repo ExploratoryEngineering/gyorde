@@ -23,7 +23,7 @@ class GyordeServiceTest {
 
         var incomingIp = ByteString.copyFrom(byteArrayOf(10.toByte(), 10.toByte(), 10.toByte(), 10.toByte()))
         var incomingImsi = 999999999999999
-        var incomingIpType = "Gyorde.CheckDeviceRequest.IPType.IPV6
+        var incomingIpType = Gyorde.CheckDeviceRequest.IPType.IPV6
 
         val predicate: Predicate =
             { imsi: Long,
@@ -39,9 +39,11 @@ class GyordeServiceTest {
         val c = GyordeClient("localhost", 9998)
         val s = GyordeServer(9998, predicate)
         s.start()
-        val x = c.checkDevice("a", "b")
+        val x =
+            c.checkDevice(outgoingImsi, outgoingIpType, outgoingIp)
         s.stop()
 
+        assertEquals(true, x.success)
         assertEquals(outgoingImsi, incomingImsi)
         assertEquals(outgoingIpType, incomingIpType)
         assertEquals(outgoingIp, incomingIp)
