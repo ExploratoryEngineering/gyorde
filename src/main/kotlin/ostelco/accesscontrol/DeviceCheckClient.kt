@@ -7,7 +7,6 @@ import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import java.util.concurrent.TimeUnit
 
-
 /**
  *  Set up a DeviceCheck client that will sends reqets towards a host/port.
  */
