@@ -2,14 +2,11 @@ package ostelco
 
 import com.google.protobuf.ByteString
 import gyorde.Gyorde
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 
-class GyordeServiceTest {
+class DeviceCheckServiceTest {
 
 
     @Test
@@ -36,8 +33,8 @@ class GyordeServiceTest {
                 true
             }
 
-        val c = GyordeClient("localhost", 9998)
-        val s = GyordeServer(9998, predicate)
+        val c = DeviceCheckClient("localhost", 9998)
+        val s = DeviceCheckServer(9998, predicate)
         s.start()
         val x =
             c.checkDevice(outgoingImsi, outgoingIpType, outgoingIp)

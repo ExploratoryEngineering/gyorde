@@ -1,7 +1,6 @@
 package ostelco
 
 import com.google.protobuf.ByteString
-import gyorde.DeviceCheckGrpc
 import gyorde.DeviceCheckGrpc.*
 import gyorde.Gyorde
 import gyorde.Gyorde.CheckDeviceRequest
@@ -14,30 +13,43 @@ import io.grpc.stub.StreamObserver
 import java.util.concurrent.TimeUnit
 
 
-
-// imsi, iptype, ip address  -> boolean
+/**
+ * A  function type that is intended to be implemented by the implementer of the
+ * DeviceCheck service.   It will give all the parameters that are provided by the
+ * incoming  DeviceCheck request, calculate a boolean value, that indicates if this
+ * request should be permitted or not.
+ */
 typealias Predicate = (Long, Gyorde.CheckDeviceRequest.IPType, ByteString) -> Boolean
 
 
-class GyordeService (val p: Predicate): DeviceCheckImplBase() {
+/**
+ * Service implementation, implementing a grpc service for
+ * device checks.
+ */
+class DeviceCheckService (val p: Predicate): DeviceCheckImplBase() {
 
     override fun checkDevice(
         request: CheckDeviceRequest,
         responseObserver: StreamObserver<CheckDeviceResponse>
     ) {
-        val r = p(request.imsi, request.ipType ,request.ipAddress)
-        val result = CheckDeviceResponse.newBuilder().setSuccess(r).build()
+        val r = p(request.imsi, request.ipType , request.ipAddress)
+        val result =
+            CheckDeviceResponse.newBuilder().setSuccess(r).build()
         responseObserver.onNext(result)
         responseObserver.onCompleted()
     }
 }
 
 
-class GyordeServer(val port: Int, val p:  Predicate) {
+/**
+ * A server for serving DeviceCheck requests.   Will start a sever
+ * in the backbround, and print a nice entry on stderr when shutting down.
+ */
+class DeviceCheckServer(val port: Int, val p:  Predicate) {
     val server: Server
 
     init {
-        server = ServerBuilder.forPort(port).addService(GyordeService(p)).build()
+        server = ServerBuilder.forPort(port).addService(DeviceCheckService(p)).build()
     }
 
     /** Stop serving requests and shutdown resources.  */
@@ -51,14 +63,18 @@ class GyordeServer(val port: Int, val p:  Predicate) {
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() { // Use stderr here since the logger may have been reset by its JVM shutdown hook.
                 System.err.println("*** shutting down gRPC server since JVM is shutting down")
-                this@GyordeServer.stop()
+                this@DeviceCheckServer.stop()
                 System.err.println("*** server shut down")
             }
         })
     }
 }
 
-class GyordeClient(val host: String, val port: Int) {
+
+/**
+ *  Set up a DeviceCheck client that will sends reqets towards a host/port.
+ */
+class DeviceCheckClient(val host: String, val port: Int) {
 
     val blockingStub: DeviceCheckBlockingStub
 
@@ -77,6 +93,10 @@ class GyordeClient(val host: String, val port: Int) {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
 
+    /**
+     * Invoke a gRPC call towards the server, return the response
+     * value.  The request is sent as a blocking request.
+     */
     fun checkDevice(
         imsi: Long,
         ipType: CheckDeviceRequest.IPType,
