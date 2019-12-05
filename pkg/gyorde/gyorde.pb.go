@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -313,6 +315,14 @@ func (c *deviceCheckClient) CheckDevice(ctx context.Context, in *CheckDeviceRequ
 type DeviceCheckServer interface {
 	// CheckDevice checks if a device is registered in Horde.
 	CheckDevice(context.Context, *CheckDeviceRequest) (*CheckDeviceResponse, error)
+}
+
+// UnimplementedDeviceCheckServer can be embedded to have forward compatible implementations.
+type UnimplementedDeviceCheckServer struct {
+}
+
+func (*UnimplementedDeviceCheckServer) CheckDevice(ctx context.Context, req *CheckDeviceRequest) (*CheckDeviceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckDevice not implemented")
 }
 
 func RegisterDeviceCheckServer(s *grpc.Server, srv DeviceCheckServer) {
