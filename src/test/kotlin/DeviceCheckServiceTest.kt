@@ -4,6 +4,9 @@ import com.google.protobuf.ByteString
 import gyorde.Gyorde
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import ostelco.accesscontrol.DeviceCheckClient
+import ostelco.accesscontrol.DeviceCheckServer
+import ostelco.accesscontrol.Predicate
 
 
 class DeviceCheckServiceTest {

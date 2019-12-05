@@ -1,16 +1,13 @@
-package ostelco
+package ostelco.accesscontrol
 
 import com.google.protobuf.ByteString
 import gyorde.DeviceCheckGrpc.*
 import gyorde.Gyorde
 import gyorde.Gyorde.CheckDeviceRequest
 import gyorde.Gyorde.CheckDeviceResponse
-import io.grpc.ManagedChannel
-import io.grpc.ManagedChannelBuilder
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -45,7 +42,7 @@ class DeviceCheckService (val p: Predicate): DeviceCheckImplBase() {
  * A server for serving DeviceCheck requests.   Will start a sever
  * in the backbround, and print a nice entry on stderr when shutting down.
  */
-class DeviceCheckServer(val port: Int, val p:  Predicate) {
+class DeviceCheckServer(val port: Int, val p: Predicate) {
     val server: Server
 
     init {
@@ -67,45 +64,5 @@ class DeviceCheckServer(val port: Int, val p:  Predicate) {
                 System.err.println("*** server shut down")
             }
         })
-    }
-}
-
-
-/**
- *  Set up a DeviceCheck client that will sends reqets towards a host/port.
- */
-class DeviceCheckClient(val host: String, val port: Int) {
-
-    val blockingStub: DeviceCheckBlockingStub
-
-    val asyncStub: DeviceCheckStub
-
-    val channel: ManagedChannel
-
-    init {
-        channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
-        blockingStub = newBlockingStub(channel)
-        asyncStub = newStub(channel);
-    }
-
-    @Throws(InterruptedException::class)
-    fun shutdown() {
-        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
-    }
-
-    /**
-     * Invoke a gRPC call towards the server, return the response
-     * value.  The request is sent as a blocking request.
-     */
-    fun checkDevice(
-        imsi: Long,
-        ipType: CheckDeviceRequest.IPType,
-        ipAddress: ByteString): gyorde.Gyorde.CheckDeviceResponse {
-
-        val request = CheckDeviceRequest.newBuilder()
-            .setImsi(imsi)
-            .setIpAddress(ipAddress)
-            .setIpType(ipType).build()
-        return blockingStub.checkDevice(request)
     }
 }
