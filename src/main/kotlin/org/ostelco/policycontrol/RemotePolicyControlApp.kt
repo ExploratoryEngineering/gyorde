@@ -69,7 +69,7 @@ class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
     }
 
     private fun ipAsByteString(ip: String): ByteString {
-        val octetStrings = ip.split("\\.")
+        val octetStrings = ip.split(".")
         val bytes: ByteArray = ByteArray(octetStrings.size) { pos -> octetStrings[pos].toInt().toByte() }
         return ByteString.copyFrom(bytes)
     }
@@ -84,10 +84,11 @@ class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
             try {
                 val returnValue =
                     client.checkDevice(stringAsLong(imsi), Gyorde.CheckDeviceRequest.IPType.IPV4, ipAsByteString(ip))
-                // TODO: Some checking of return values
+                // TODO: Some checking of error message etc.
                 return returnValue.success
             } catch (e: Throwable) {
                 // TODO: Logging
+                println("Threw $e")
                 return false
             }
         }
