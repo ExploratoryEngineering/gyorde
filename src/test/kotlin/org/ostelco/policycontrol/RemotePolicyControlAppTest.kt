@@ -62,6 +62,7 @@ class RemotePolicyControlAppTest {
         s.start()
         val result = RULE.getApplication<RemotePolicyControlApp>().rpsm.checkPermissionFor("123456789012344", "129.240.222.66")
         s.stop()
+        RULE.getApplication<RemotePolicyControlApp>().rpsm.stop() // Add to lifecycle
 
         assertEquals(true, result)
     }

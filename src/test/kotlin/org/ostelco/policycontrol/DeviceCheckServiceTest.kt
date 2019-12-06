@@ -41,6 +41,7 @@ class DeviceCheckServiceTest {
         val x =
             c.checkDevice(outgoingImsi, outgoingIpType, outgoingIp)
         s.stop()
+        c.shutdown()
 
         assertEquals(true, x.success)
         assertEquals(outgoingImsi, incomingImsi)

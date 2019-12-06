@@ -5,14 +5,9 @@ import com.google.protobuf.ByteString
 import gyorde.Gyorde
 import io.dropwizard.Application
 import io.dropwizard.Configuration
-import io.dropwizard.lifecycle.Managed
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
-import org.apache.log4j.spi.LoggerFactory
-import java.util.*
-import javax.servlet.DispatcherType
 import javax.validation.Valid
-import kotlin.collections.HashMap
 
 /**
  * A module that will contact a remote policy control service to get authorization
@@ -44,9 +39,11 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
 class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
 
     private val imsiToClientMap: Map<String, DeviceCheckClient>
+    private val clients: List<DeviceCheckClient>
 
     init {
         val theMap = mutableMapOf<String, DeviceCheckClient>()
+        val theClients = mutableListOf<DeviceCheckClient>()
 
         for (config in rpcConfig.policyServerConfigs) {
             // TODO: Validate hostname/port values before using in client
@@ -55,9 +52,17 @@ class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
                 // TODO: Validate imsi before using it as key
                 // TODO: Check that imsi isn't already registred.
                 theMap[imsi] = client
+                theClients.add(client)
             }
         }
         imsiToClientMap = theMap
+        clients = theClients
+    }
+
+    fun stop() {
+        for (c in clients) {
+            c.shutdown()
+        }
     }
 
     private fun getClientFor(imsi: String): DeviceCheckClient? {
