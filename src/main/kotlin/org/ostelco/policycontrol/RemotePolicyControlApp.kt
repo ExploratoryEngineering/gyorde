@@ -67,6 +67,10 @@ class PolicyServerConfig {
     @Valid
     @JsonProperty("port")
     var port: Int = 0
+
+    @Valid
+    @JsonProperty("imsilist")
+    lateinit var imsilist: List<String>
 }
 
 class RemotePolicyControlConfig constructor() : Configuration() {

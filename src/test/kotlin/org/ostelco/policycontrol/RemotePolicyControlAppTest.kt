@@ -39,6 +39,8 @@ class RemotePolicyControlAppTest {
         assertEquals("test-server", firstServerConfig.name)
         assertEquals("127.0.0.1", firstServerConfig.hostname)
         assertEquals(9998, firstServerConfig.port)
+        val imsilist = mutableListOf("123456789012345", "123456789012344", "123456789012346")
+        assertEquals(imsilist, firstServerConfig.imsilist)
     }
 /*
     @Test

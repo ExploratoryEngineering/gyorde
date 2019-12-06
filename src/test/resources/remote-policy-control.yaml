@@ -1,4 +1,8 @@
 remote-policy-servers:
-  name: test-server
-  hostname: 127.0.0.1
-  port: 9998
+  - name: test-server
+    hostname: 127.0.0.1
+    port: 9998
+    imsilist:
+      - 123456789012345
+      - 123456789012344
+      - 123456789012346
