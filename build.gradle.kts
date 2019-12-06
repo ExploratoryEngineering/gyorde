@@ -45,6 +45,8 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.5.2")
+
+    runtimeOnly("javax.xml.bind:jaxb-api:${Version.jaxb}")
 }
 
 java {
