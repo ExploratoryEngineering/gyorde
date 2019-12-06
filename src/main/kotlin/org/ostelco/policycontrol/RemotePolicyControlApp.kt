@@ -60,9 +60,7 @@ class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
     }
 
     fun stop() {
-        for (c in clients) {
-            c.shutdown()
-        }
+        clients.forEach{it.shutdown()}
     }
 
     private fun getClientFor(imsi: String): DeviceCheckClient? {
