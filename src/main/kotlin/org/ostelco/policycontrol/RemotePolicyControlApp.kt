@@ -23,12 +23,15 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
     override fun initialize(bootstrap: Bootstrap<RemotePolicyControlConfig?>) {
     }
 
+    lateinit var rpsm: RemotePolicyServiceMgr
+
     override fun run(
         configuration: RemotePolicyControlConfig?,
         environment: Environment
     ) {
-        //  environment.admin().addTask(MyTestTask())
-        //  environment.jersey().register(resource)
+        if (configuration != null) {
+            rpsm = RemotePolicyServiceMgr(configs = configuration)
+        }
     }
 
     companion object {
@@ -40,7 +43,7 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
 
 class RemotePolicyServiceMgr(configs: List<PolicyServerConfig>) {
 
-    val imsiToClientMap: Map<String, DeviceCheckClient>
+    private val imsiToClientMap: Map<String, DeviceCheckClient>
 
     init {
         val theMap = mutableMapOf<String, DeviceCheckClient>()
