@@ -42,6 +42,9 @@ class RemotePolicyControlAppTest {
         val imsilist = mutableListOf("123456789012345", "123456789012344", "123456789012346")
         assertEquals(imsilist, firstServerConfig.imsilist)
     }
+
+
+
 /*
     @Test
     fun deviceCheckServicegRpcRoundtrip() {

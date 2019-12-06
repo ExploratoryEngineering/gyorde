@@ -27,8 +27,8 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
         configuration: RemotePolicyControlConfig?,
         environment: Environment
     ) {
-       //  environment.admin().addTask(MyTestTask())
-       //  environment.jersey().register(resource)
+        //  environment.admin().addTask(MyTestTask())
+        //  environment.jersey().register(resource)
     }
 
     companion object {
@@ -38,22 +38,59 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
     }
 }
 
-/*
-class RemotePolicService() : Managed {
+class RemotePolicyServiceMgr(configs: List<PolicyServerConfig>) {
 
-    val blockingClient = DeviceCheckClient("localhost", 9998)
+    val imsiToClientMap: Map<String, DeviceCheckClient>
 
-    fun ping() {
-        val bytes = byteArrayOf(129.toByte(), 240.toByte(), 222.toByte(), 66.toByte())
-        val outgoingIp = ByteString.copyFrom(bytes)
-        val outgoingImsi = 123456789012345
-        val outgoingIpType = Gyorde.CheckDeviceRequest.IPType.IPV4
+    init {
+        val theMap = mutableMapOf<String, DeviceCheckClient>()
 
-        blockingClient.checkDevice(outgoingImsi, outgoingIpType, outgoingIp)
+        for (config in configs) {
+            // TODO: Validate hostname/port values before using in client
+            val client = DeviceCheckClient(config.hostname, config.port)
+            for (imsi in config.imsilist) {
+                // TODO: Validate imsi before using it as key
+                // TODO: Check that imsi isn't already registred.
+                theMap[imsi] = client
+            }
+        }
+        imsiToClientMap = theMap
     }
 
+    private fun getClientFor(imsi: String): DeviceCheckClient? {
+        return imsiToClientMap[imsi]
+    }
+
+    private fun stringAsLong(imsi: String): Long {
+        return imsi.toLong()
+    }
+
+    private fun ipAsByteString(ip: String): ByteString {
+        val octetStrings = ip.split("\\.")
+        val bytes: ByteArray = ByteArray(octetStrings.size) { pos -> octetStrings[pos].toInt().toByte() }
+        return ByteString.copyFrom(bytes)
+    }
+
+    // This is the plain vanilla version. Later versions will be more
+    // elaborate
+    public fun checkPermissionFor(imsi: String, ip: String): Boolean {
+        val client = imsiToClientMap[imsi]
+        if (client == null) {
+            return true
+        } else {
+            try {
+                val returnValue =
+                    client.checkDevice(stringAsLong(imsi), Gyorde.CheckDeviceRequest.IPType.IPV4, ipAsByteString(ip))
+                // TODO: Some checking of return values
+                return returnValue.success
+            } catch (e: Throwable) {
+                // TODO: Logging
+                return false
+            }
+        }
+    }
 }
-*/
+
 
 class PolicyServerConfig {
     @Valid
