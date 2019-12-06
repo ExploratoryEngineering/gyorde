@@ -1,0 +1,4 @@
+remote-policy-servers:
+  name: test-server
+  hostname: 127.0.0.1
+  port: 9998

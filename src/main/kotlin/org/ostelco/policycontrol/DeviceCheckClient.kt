@@ -1,4 +1,4 @@
-package ostelco.accesscontrol
+package org.ostelco.policycontrol
 
 import com.google.protobuf.ByteString
 import gyorde.DeviceCheckGrpc

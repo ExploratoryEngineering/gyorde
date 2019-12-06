@@ -1,4 +1,4 @@
-package ostelco.accesscontrol
+package org.ostelco.policycontrol
 
 import com.google.protobuf.ByteString
 import gyorde.DeviceCheckGrpc.*
@@ -46,7 +46,11 @@ class DeviceCheckServer(val port: Int, val p: Predicate) {
     val server: Server
 
     init {
-        server = ServerBuilder.forPort(port).addService(DeviceCheckService(p)).build()
+        server = ServerBuilder.forPort(port).addService(
+            DeviceCheckService(
+                p
+            )
+        ).build()
     }
 
     /** Stop serving requests and shutdown resources.  */

@@ -1,6 +1,9 @@
 import com.google.protobuf.gradle.*
 import org.ostelco.gyorde.gradle.Version
 
+
+
+
 plugins {
     kotlin("jvm") version "1.3.61"
     id("com.google.protobuf") version "0.8.10"
@@ -11,14 +14,22 @@ plugins {
 group = "org.ostelco.gyorde"
 version = "1.0-SNAPSHOT"
 
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
 
+    // Kotlin
     implementation(kotlin("stdlib-jdk8"))
 
+    // Dropwizard
+    implementation("io.dropwizard:dropwizard-core:${Version.dropwizard}")
+    implementation("io.dropwizard:dropwizard-client:${Version.dropwizard}")
+    testImplementation("io.dropwizard:dropwizard-testing:${Version.dropwizard}")
+
+    // gRPC
     api("io.grpc:grpc-netty-shaded:${Version.grpc}")
     api("io.grpc:grpc-protobuf:${Version.grpc}")
     api("io.grpc:grpc-stub:${Version.grpc}")
@@ -27,10 +38,13 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java-util:${Version.protoc}")
     implementation("javax.annotation:javax.annotation-api:${Version.javaxAnnotation}")
 
-    testImplementation("org.assertj:assertj-core:3.12.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+    // jUnit
+    // testImplementation("org.assertj:assertj-core:3.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 
+    testImplementation("junit:junit:4.12")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.5.2")
 }
 
 java {

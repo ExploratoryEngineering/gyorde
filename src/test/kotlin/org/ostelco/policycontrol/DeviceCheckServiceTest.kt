@@ -1,19 +1,18 @@
-package ostelco
+package ostelco.org.ostelco.policycontrol
 
 import com.google.protobuf.ByteString
 import gyorde.Gyorde
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import ostelco.accesscontrol.DeviceCheckClient
-import ostelco.accesscontrol.DeviceCheckServer
-import ostelco.accesscontrol.Predicate
+import junit.framework.TestCase.assertEquals
+import org.junit.Test
+import org.ostelco.policycontrol.DeviceCheckClient
+import org.ostelco.policycontrol.DeviceCheckServer
+import org.ostelco.policycontrol.Predicate
 
 
 class DeviceCheckServiceTest {
 
-
     @Test
-    fun roundtrip() {
+    fun deviceCheckServicegRpcRoundtrip() {
 
         // Hand-coding 129.240.222.66 into byte array.
         val bytes = byteArrayOf(129.toByte(), 240.toByte(), 222.toByte(), 66.toByte())
