@@ -30,7 +30,7 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
         environment: Environment
     ) {
         if (configuration != null) {
-            rpsm = RemotePolicyServiceMgr(configs = configuration)
+            rpsm = RemotePolicyServiceMgr(configuration)
         }
     }
 
@@ -41,14 +41,14 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
     }
 }
 
-class RemotePolicyServiceMgr(configs: List<PolicyServerConfig>) {
+class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
 
     private val imsiToClientMap: Map<String, DeviceCheckClient>
 
     init {
         val theMap = mutableMapOf<String, DeviceCheckClient>()
 
-        for (config in configs) {
+        for (config in rpcConfig.policyServerConfigs) {
             // TODO: Validate hostname/port values before using in client
             val client = DeviceCheckClient(config.hostname, config.port)
             for (imsi in config.imsilist) {

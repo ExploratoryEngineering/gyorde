@@ -60,7 +60,7 @@ class RemotePolicyControlAppTest {
         val s = DeviceCheckServer(9998, predicate)
 
         s.start()
-        val result = RULE.getApplication<RemotePolicyControlApp>().rpsm.checkPermissionFor("123456789012344""129.240.222.66")
+        val result = RULE.getApplication<RemotePolicyControlApp>().rpsm.checkPermissionFor("123456789012344", "129.240.222.66")
         s.stop()
 
         assertEquals(true, result)
