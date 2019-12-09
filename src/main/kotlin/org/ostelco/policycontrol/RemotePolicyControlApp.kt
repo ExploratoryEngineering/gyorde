@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString
 import gyorde.Gyorde
 import io.dropwizard.Application
 import io.dropwizard.Configuration
+import io.dropwizard.lifecycle.Managed
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import javax.validation.Valid
@@ -26,6 +27,7 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
     ) {
         if (configuration != null) {
             rpsm = RemotePolicyServiceMgr(configuration)
+            environment.lifecycle().manage(rpsm);
         }
     }
 
@@ -36,21 +38,23 @@ class RemotePolicyControlApp() : Application<RemotePolicyControlConfig?>() {
     }
 }
 
-class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
+class RemotePolicyServiceMgr(val rpcConfig: RemotePolicyControlConfig) : Managed {
 
-    private val imsiToClientMap: Map<String, DeviceCheckClient>
-    private val clients: List<DeviceCheckClient>
+    lateinit private var imsiToClientMap: Map<String, DeviceCheckClient>
+    lateinit private var clients: List<DeviceCheckClient>
 
-    init {
+
+    // TODO: Add an init function that validates the configuration
+    //       ... only valid IMSIs, hostnnames and portnumbers, that IMSIs
+    //       are not registred twice.
+
+    override fun start() {
         val theMap = mutableMapOf<String, DeviceCheckClient>()
         val theClients = mutableListOf<DeviceCheckClient>()
 
         for (config in rpcConfig.policyServerConfigs) {
-            // TODO: Validate hostname/port values before using in client
             val client = DeviceCheckClient(config.hostname, config.port)
             for (imsi in config.imsilist) {
-                // TODO: Validate imsi before using it as key
-                // TODO: Check that imsi isn't already registred.
                 theMap[imsi] = client
                 theClients.add(client)
             }
@@ -59,7 +63,7 @@ class RemotePolicyServiceMgr(rpcConfig: RemotePolicyControlConfig) {
         clients = theClients
     }
 
-    fun stop() {
+    override fun stop() {
         clients.forEach{it.shutdown()}
     }
 
