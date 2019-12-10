@@ -4,7 +4,6 @@ import com.google.protobuf.ByteString
 import gyorde.Gyorde
 import io.dropwizard.testing.ResourceHelpers
 import io.dropwizard.testing.junit.DropwizardAppRule
-import io.dropwizard.testing.junit5.DropwizardAppExtension
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.ClassRule
